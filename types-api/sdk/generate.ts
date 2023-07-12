@@ -29,7 +29,6 @@ async function generate() {
 }
 
 function makeAlias(path: string, method: string, operation: OperationObject) {
-  console.log("path", path);
   if (!operation) return "";
   const basePath = path;
 

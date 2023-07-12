@@ -3,6 +3,7 @@
 # dependencies
 /types-api/node_modules
 /types-app/node_modules
+/nest-app/node_modules
 /node_modules
 /.pnp
 .pnp.js
