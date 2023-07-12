@@ -1,0 +1,94 @@
+/* eslint-disable @typescript-eslint/ban-types */
+import { makeApi, Zodios, type ZodiosOptions, type ApiOf } from "@zodios/core";
+import { z } from "zod";
+import { 
+	getApiUrl,
+	remapApiClient } from './utils';
+import qs from 'qs';
+
+{{#if types}}
+{{#each types}}
+{{{this}}}
+{{/each}}
+{{/if}}
+
+{{#each schemas}}
+const {{@key}}{{#if (lookup ../circularTypeByName @key)}}: z.ZodType<{{@key}}>{{/if}} = {{{this}}};
+{{/each}}
+
+{{#ifNotEmptyObj schemas}}
+export const schemas = {
+{{#each schemas}}
+	{{@key}},
+{{/each}}
+};
+{{/ifNotEmptyObj}}
+
+{{#each endpointsGroups}}
+const {{@key}}Endpoints = makeApi([
+{{#each this.endpoints}}
+	{
+		method: "{{method}}",
+		path: "{{path}}",
+		{{#if alias}}
+		alias: "{{alias}}",
+		{{/if}}
+		{{#if description}}
+		description: `{{description}}`,
+		{{/if}}
+		{{#if requestFormat}}
+		requestFormat: "{{requestFormat}}",
+		{{/if}}
+		{{#if parameters}}
+		parameters: [
+			{{#each parameters}}
+			{
+				name: "{{name}}",
+				{{#if description}}
+				description: `{{description}}`,
+				{{/if}}
+				{{#if type}}
+				type: "{{type}}",
+				{{/if}}
+				schema: {{{schema}}}
+			},
+			{{/each}}
+		],
+		{{/if}}
+		response: {{{response}}},
+		{{#if errors.length}}
+		errors: [
+			{{#each errors}}
+			{
+				{{#ifeq status "default" }}
+				status: "default",
+				{{else}}
+				status: {{status}},
+				{{/ifeq}}
+				{{#if description}}
+				description: `{{description}}`,
+				{{/if}}
+				schema: {{{schema}}}
+			},
+			{{/each}}
+		]
+		{{/if}}
+	},
+{{/each}}
+]);
+
+const {{@key}}Zodios = (baseUrl: string, options?: ZodiosOptions) => new Zodios(baseUrl, {{@key}}Endpoints, options);
+
+export async function create{{capitalize @key}}Client(options: ZodiosOptions = { validate: 'request' }) {
+  const apiUrl = getApiUrl();
+  const client = {{@key}}Zodios(apiUrl, {
+    axiosConfig: {
+      {{!-- headers: { 'X-API-KEY': key, 'client-id': clientId }, --}}
+      paramsSerializer: { serialize: params => qs.stringify(params, { arrayFormat: 'repeat' }) },
+    },
+		...options,
+  });
+  return remapApiClient<ApiOf<typeof client>>(client);
+}
+
+{{/each}}

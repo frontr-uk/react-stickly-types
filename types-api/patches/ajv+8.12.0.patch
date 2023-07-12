@@ -1,0 +1,12 @@
+diff --git a/node_modules/ajv/dist/compile/index.js b/node_modules/ajv/dist/compile/index.js
+index b125ecd..a030b84 100644
+--- a/node_modules/ajv/dist/compile/index.js
++++ b/node_modules/ajv/dist/compile/index.js
+@@ -75,6 +75,7 @@ function compileSchema(sch) {
+         self: this,
+     };
+     let sourceCode;
++    let x = 'test';
+     try {
+         this._compilations.add(sch);
+         (0, validate_1.validateFunctionCode)(schemaCxt);

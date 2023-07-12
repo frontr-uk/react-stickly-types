@@ -1,0 +1,52 @@
+diff --git a/node_modules/openapi-zod-client/dist/generateZodClientFromOpenAPI-541145c0.cjs.prod.js b/node_modules/openapi-zod-client/dist/generateZodClientFromOpenAPI-541145c0.cjs.prod.js
+index 65f6f08..a628477 100644
+--- a/node_modules/openapi-zod-client/dist/generateZodClientFromOpenAPI-541145c0.cjs.prod.js
++++ b/node_modules/openapi-zod-client/dist/generateZodClientFromOpenAPI-541145c0.cjs.prod.js
+@@ -1601,7 +1601,7 @@ var getZodiosEndpointDefinitionList = function getZodiosEndpointDefinitionList(d
+       var operationName = getOperationAlias(path, method, operation);
+       var endpointDefinition = {
+         method: method,
+-        path: replaceHyphatedPath(path),
++        path: path.replaceAll(/{(\w+)}/g, ":$1"),
+         alias: operationName,
+         description: operation.description,
+         requestFormat: "json",
+@@ -1692,11 +1692,7 @@ var getZodiosEndpointDefinitionList = function getZodiosEndpointDefinitionList(d
+               }
+             });
+             endpointDefinition.parameters.push({
+-              name: tsPattern.match(paramItem["in"])["with"]("path", function () {
+-                return pathParamToVariableName(paramItem.name);
+-              }).otherwise(function () {
+-                return paramItem.name;
+-              }),
++              name: paramItem["name"],
+               type: tsPattern.match(paramItem["in"])["with"]("header", function () {
+                 return "Header";
+               })["with"]("query", function () {
+diff --git a/node_modules/openapi-zod-client/dist/generateZodClientFromOpenAPI-6503eccc.cjs.dev.js b/node_modules/openapi-zod-client/dist/generateZodClientFromOpenAPI-6503eccc.cjs.dev.js
+index 65f6f08..a628477 100644
+--- a/node_modules/openapi-zod-client/dist/generateZodClientFromOpenAPI-6503eccc.cjs.dev.js
++++ b/node_modules/openapi-zod-client/dist/generateZodClientFromOpenAPI-6503eccc.cjs.dev.js
+@@ -1601,7 +1601,7 @@ var getZodiosEndpointDefinitionList = function getZodiosEndpointDefinitionList(d
+       var operationName = getOperationAlias(path, method, operation);
+       var endpointDefinition = {
+         method: method,
+-        path: replaceHyphatedPath(path),
++        path: path.replaceAll(/{(\w+)}/g, ":$1"),
+         alias: operationName,
+         description: operation.description,
+         requestFormat: "json",
+@@ -1692,11 +1692,7 @@ var getZodiosEndpointDefinitionList = function getZodiosEndpointDefinitionList(d
+               }
+             });
+             endpointDefinition.parameters.push({
+-              name: tsPattern.match(paramItem["in"])["with"]("path", function () {
+-                return pathParamToVariableName(paramItem.name);
+-              }).otherwise(function () {
+-                return paramItem.name;
+-              }),
++              name: paramItem["name"],
+               type: tsPattern.match(paramItem["in"])["with"]("header", function () {
+                 return "Header";
+               })["with"]("query", function () {
